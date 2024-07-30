@@ -61,12 +61,9 @@ class MainActivity : AppCompatActivity() {
                 dialog.show(supportFragmentManager, "AddTodoDialogFragment")
                 true
             }
-            R.id.action_hide_completed -> {
-                // TODO: Handle hiding completed tasks
-                true
-            }
-            R.id.action_show_completed -> {
-                // TODO: Handle showing completed tasks
+            R.id.action_sort_by_priority -> {
+                todoItems.sortByDescending { it.priority }
+                todoAdapter.notifyDataSetChanged()
                 true
             }
             R.id.action_delete_completed -> {
