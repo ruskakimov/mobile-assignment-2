@@ -105,6 +105,15 @@ class TodoAdapter(private val todoList: MutableList<TodoItem>) :
         }
         holder.priorityLine.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, priorityColor))
 
+        // Set style based on completion status
+        if (item.isDone) {
+            holder.todoText.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.dark_gray))
+            holder.todoText.paintFlags = holder.todoText.paintFlags or android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
+        } else {
+            holder.todoText.setTextColor(ContextCompat.getColor(holder.itemView.context, R.color.black))
+            holder.todoText.paintFlags = holder.todoText.paintFlags and android.graphics.Paint.STRIKE_THRU_TEXT_FLAG.inv()
+        }
+
         holder.checkmarkButton.setOnClickListener {
             item.isDone = !item.isDone
             notifyItemChanged(position)
