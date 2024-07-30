@@ -1,12 +1,26 @@
 package com.example.task.manager.x
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+
+data class TodoItem(val text: String, val priority: Priority, var isDone: Boolean = false)
+
+enum class Priority {
+    LOW, MEDIUM, HIGH
+}
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,6 +35,17 @@ class MainActivity : AppCompatActivity() {
 
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
+
+        val todoItems = mutableListOf(
+            TodoItem("Task 1", Priority.HIGH),
+            TodoItem("Task 2", Priority.MEDIUM),
+            TodoItem("Task 3", Priority.LOW)
+        )
+
+        val recyclerView = findViewById<RecyclerView>(R.id.todo_recycler_view)
+        val todoAdapter = TodoAdapter(todoItems)
+        recyclerView.adapter = todoAdapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -50,3 +75,47 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+
+class TodoAdapter(private val todoList: MutableList<TodoItem>) :
+    RecyclerView.Adapter<TodoAdapter.TodoViewHolder>() {
+
+    class TodoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val priorityLine: View = view.findViewById(R.id.priority_line)
+        val checkmarkButton: ImageButton = view.findViewById(R.id.checkmark_button)
+        val todoText: TextView = view.findViewById(R.id.todo_text)
+        val deleteButton: ImageButton = view.findViewById(R.id.delete_button)
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.todo_item, parent, false)
+        return TodoViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: TodoViewHolder, position: Int) {
+        val item = todoList[position]
+
+        // Set text
+        holder.todoText.text = item.text
+
+        // Set priority
+        val priorityColor = when (item.priority) {
+            Priority.HIGH -> R.color.red
+            Priority.MEDIUM -> R.color.orange
+            Priority.LOW -> R.color.gray
+        }
+        holder.priorityLine.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, priorityColor))
+
+        holder.checkmarkButton.setOnClickListener {
+            item.isDone = !item.isDone
+            notifyItemChanged(position)
+        }
+
+        holder.deleteButton.setOnClickListener {
+            todoList.removeAt(position)
+            notifyItemRemoved(position)
+        }
+    }
+
+    override fun getItemCount(): Int = todoList.size
+}
+
