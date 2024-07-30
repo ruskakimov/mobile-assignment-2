@@ -24,6 +24,8 @@ class AddTodoDialogFragment : DialogFragment(R.layout.dialog_add_todo) {
                 else -> Priority.LOW
             }
             val todoItem = TodoItem(todoText, priority)
+            val mainActivity = activity as MainActivity
+            mainActivity.receiveTodoItem(todoItem)
             dismiss()
         }
 

@@ -23,6 +23,13 @@ enum class Priority {
 }
 
 class MainActivity : AppCompatActivity() {
+    val todoItems = mutableListOf(
+        TodoItem("Task 1", Priority.HIGH),
+        TodoItem("Task 2", Priority.MEDIUM),
+        TodoItem("Task 3", Priority.LOW)
+    )
+    lateinit var todoAdapter: TodoAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -36,14 +43,8 @@ class MainActivity : AppCompatActivity() {
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        val todoItems = mutableListOf(
-            TodoItem("Task 1", Priority.HIGH),
-            TodoItem("Task 2", Priority.MEDIUM),
-            TodoItem("Task 3", Priority.LOW)
-        )
-
         val recyclerView = findViewById<RecyclerView>(R.id.todo_recycler_view)
-        val todoAdapter = TodoAdapter(todoItems)
+        todoAdapter = TodoAdapter(todoItems)
         recyclerView.adapter = todoAdapter
         recyclerView.layoutManager = LinearLayoutManager(this)
     }
@@ -74,6 +75,12 @@ class MainActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    fun receiveTodoItem(todoItem: TodoItem) {
+        todoItems.add(0, todoItem)
+        todoAdapter.notifyItemInserted(0)
+        todoAdapter.notifyItemRangeChanged(0, todoItems.size)
     }
 }
 
