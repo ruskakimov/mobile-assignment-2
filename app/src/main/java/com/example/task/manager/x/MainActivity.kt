@@ -122,6 +122,7 @@ class TodoAdapter(private val todoList: MutableList<TodoItem>) :
         holder.deleteButton.setOnClickListener {
             todoList.removeAt(position)
             notifyItemRemoved(position)
+            notifyItemRangeChanged(position, todoList.size)
         }
     }
 
