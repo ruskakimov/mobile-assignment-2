@@ -67,7 +67,8 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             R.id.action_delete_completed -> {
-                // TODO: Handle deleting completed tasks
+                todoItems.removeAll { it.isDone }
+                todoAdapter.notifyDataSetChanged()
                 true
             }
             else -> super.onOptionsItemSelected(item)
