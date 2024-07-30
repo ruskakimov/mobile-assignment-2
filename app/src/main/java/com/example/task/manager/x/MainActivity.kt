@@ -56,7 +56,8 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_add -> {
-                // TODO: Handle adding a new TODO item
+                val dialog = AddTodoDialogFragment()
+                dialog.show(supportFragmentManager, "AddTodoDialogFragment")
                 true
             }
             R.id.action_hide_completed -> {
